@@ -16,9 +16,9 @@ class UserPolicy
 
     public function actualizar(User $user, User $model)
     {
-        if($user->id==$model->id){
-            return false;
-        }
+        // if($user->id==$model->id){
+        //     return false;
+        // }
 
         if($model->hasRole('Administrador')){
             return false;

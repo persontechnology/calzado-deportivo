@@ -45,12 +45,14 @@ class HomeController extends Controller
             'direccion' => 'required|string|max:255',
             'password_actual' => 'nullable|string|min:8',
             'password' => 'nullable|string|min:8|confirmed',
+            'identificacion' => 'required|max:255|unique:users,identificacion,'.Auth::id(),
         ]);
         $user=Auth::user();
         $user->apellidos=$request->apellidos;
         $user->nombres=$request->nombres;
         $user->telefono=$request->telefono;
         $user->direccion=$request->direccion;
+        $user->identificacion=$request->identificacion;
 
         if($request->password){
             if(Hash::check($request->password_actual,$user->password)){

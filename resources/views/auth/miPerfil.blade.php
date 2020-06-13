@@ -14,6 +14,16 @@
                         @csrf
                         
 
+                        <div class="md-form md-outline my-1">
+                            <input type="text" id="identificacion" name="identificacion" class="form-control @error('identificacion') is-invalid @enderror " value="{{ old('identificacion',$user->identificacion) }}" required>
+                            <label for="identificacion">Identificación<i class="text-danger">*</i></label>
+                            @error('identificacion')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        
                         <div class="form-row">
                             <div class="col">
                                 <div class="md-form md-outline my-1">
