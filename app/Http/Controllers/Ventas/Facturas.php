@@ -106,8 +106,18 @@ class Facturas extends Controller
         try {
             if($factura->estado=='Entregado'){
                 $factura->estado='Anulado';
+
+                foreach ($factura->facturaDetalles as $df) {
+                    $df->producto->cantidad=$df->producto->cantidad+$df->cantidad;
+                    $df->producto->save();
+                }
+
             }else{
                 $factura->estado='Entregado';
+                foreach ($factura->facturaDetalles as $df) {
+                    $df->producto->cantidad=$df->producto->cantidad-$df->cantidad;
+                    $df->producto->save();
+                }
             }
             $factura->save();
             return response()->json(['success'=>'Factura '.$factura->estado.' exitosamente']);
