@@ -62,7 +62,10 @@ class UserPolicy
             return false;
         }
 
-        return true;
+        if($user->hasRole('Administrador')){
+            return true;
+        }
+        
     }
 
 }
