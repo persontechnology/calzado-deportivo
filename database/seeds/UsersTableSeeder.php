@@ -28,13 +28,13 @@ class UsersTableSeeder extends Seeder
         Role::firstOrCreate(['name' => 'Cliente']);
         Role::firstOrCreate(['name' => 'Vendedor']);
         $role->givePermissionTo(Permission::all());
-
-        $user=User::where('email','admin@factur.com')->first();
+        $email_admin=env('EMAIL_ADMIN', '');
+        $user=User::where('email',$email_admin)->first();
         if(!$user){
             $user= User::firstOrCreate([
                 'name' => 'Admin',
-                'email' => 'admin@factur.com',
-                'password' => Hash::make('@dmin_factur'),
+                'email' => $email_admin,
+                'password' => Hash::make($email_admin),
                 'nombres'=>'Admin',
                 'apellidos'=>'Admin',
                 'identificacion'=>'000000000',
