@@ -37,7 +37,11 @@ class RqGuardar extends FormRequest
 
         $rg_decimal="/^[0-9,]+(\.\d{0,2})?$/";
         return [
-            'cliente'=>'required|exists:users,id',
+            'identificacion'=>'required|string|max:255',
+            'apellidos'=>'required|string|max:255',
+            'nombres'=>'required|string|max:255',
+            'direccion'=>'required|string|max:255',
+            'telefono'=>'nullable|string|max:255',
             'producto'=>'required|array|max:10|min:1',
             'producto.*'=>'required|exists:productos,id|RqCantidadProducto',
             'cantidad'=>'required|array',

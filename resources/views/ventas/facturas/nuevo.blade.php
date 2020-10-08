@@ -24,9 +24,7 @@
                         <a href="{{ route('nuevaFactura') }}" class="btn btn-unique">
                             <i class="fas fa-cart-plus fa-2x"></i> NUEVA VENTA
                         </a>
-                        <button class="btn btn-elegant" data-toggle="modal" data-target="#modalListadoClientes">
-                            <i class="fas fa-user-check fa-2x"></i> SELECIONAR CLIENTE
-                        </button>
+                        
                         <div id="contenedorBotonesImprimir">
 
                         </div>
@@ -47,32 +45,66 @@
             <form action="{{ route('guardarFactura') }}" method="POST" id="formFactura">
                 @csrf
                 <div class="card">
-                    <div class="card-header">
-                        <input type="hidden" name="cliente" value="{{ $consumidor->id??'' }}" id="txt_user" required>
-                        
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-sm mb-1">
+                    
+                    <div class="card-header bg-transparent">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <button class="btn btn-elegant my-0 btn-sm" type="button" data-toggle="modal" data-target="#modalListadoClientes">
+                                    <i class="fas fa-user-check fa-2x"></i> Buscar cliente
+                                </button>
+                            </div>
+                            <div class="col">
+                                <div class="md-form md-outline my-0">
+                                    <input id="form-lg"  class="form-control is-invalid border-danger text-danger" type="text" value="" name="numero" required>
+                                    <label for="form-lg" class="active text-danger"><strong>NÚMERO DE FACTURA</strong></label>
+                                    @if ($ultimaFactura)
+                                        <small class="form-text text-muted text-right">Última factura: <strong id="ultimaFactura">{{ $ultimaFactura->numero }}</strong></small>
+                                    @endif    
+                                </div>
                                 
-                                <tbody>
-                                <tr>
-                                    <th scope="row">Señor/a:</th>
-                                    <td id="txt_cliente">{{ $consumidor->apellidos??'' }} {{ $consumidor->nombres??'' }}</td>
-                                    <th scope="row">R.U.C:</th>
-                                    <td id="txt_identificacion">{{ $consumidor->identificacion??'' }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Dirección:</th>
-                                    <td id="txt_direccion">{{ $consumidor->direccion??'' }}</td>
-                                    <th scope="row">Teléfono:</th>
-                                    <td id="txt_telefono">{{ $consumidor->telefono??'' }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            </div>
                         </div>
-                        <div class="md-form md-outline form-lg my-2">
-                            <input id="form-lg"  class="form-control is-invalid border-danger form-control-lg text-danger" type="text" value="" name="numero" required>
-                            <label for="form-lg" class="active text-danger"><strong>NÚMERO DE FACTURA</strong></label>
+                        
+                        <div class="row">
+                            <div class="col">
+                                <div class="md-form md-outline my-0">
+                                    <input type="text" value="{{ $consumidor->identificacion??'' }}" onkeyup="buscarCliente(this);" id="txt_identificacion" name="identificacion" class="form-control" required>
+                                    <label for="txt_identificacion">Identificación:<span class="text-danger">*</span></label>
+                                </div>
+                            </div>
+                            
                         </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="md-form md-outline my-0">
+                                    <input type="text" value="{{ $consumidor->apellidos??'' }}" id="txt_apellidos" name="apellidos" class="form-control" required>
+                                    <label for="txt_apellidos">Apellidos:<span class="text-danger">*</span></label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="md-form md-outline my-0">
+                                    <input type="text" value="{{ $consumidor->nombres??'' }}" id="txt_nombres" name="nombres" class="form-control" required>
+                                    <label for="txt_nombres">Nombres:<span class="text-danger">*</span></label>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="md-form md-outline my-0">
+                                    <input type="text" value="{{ $consumidor->direccion??'SALCEDO' }}" id="txt_direccion" name="direccion" class="form-control" required>
+                                    <label for="txt_direccion">Dirección:<span class="text-danger">*</span></label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="md-form md-outline my-0">
+                                    <input type="text" value="{{ $consumidor->telefono??'' }}" id="txt_telefono" name="telefono" class="form-control">
+                                    <label for="txt_telefono">Teléfono:</label>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -123,11 +155,11 @@
                                         <td colspan="3">
                                             
                                             <p>
-                                                SUB TOTAL 12% <strong class="float-right" id="sub_total_factura">0.00</strong><br>
+                                                SUB TOTAL {{ $iva }}% <strong class="float-right" id="sub_total_factura">0.00</strong><br>
                                                 SUB TOTAL 0% <strong class="float-right">0.00</strong><br>
                                                 DESCUENTO <strong class="float-right">0.00</strong><br>
                                                 SUB TOTAL <strong class="float-right">0.00</strong><br>
-                                                IVA 12% <strong class="float-right" id="iva_factura">0.00</strong><br>
+                                                IVA {{ $iva }}% <strong class="float-right" id="iva_factura">0.00</strong><br>
                                                 VALOR TOTAL <strong class="float-right" id="total_factura">0.00</strong><br>
                                             </p>
                                             
@@ -223,11 +255,11 @@
 {{-- moeny --}}
 <link rel="stylesheet" href="{{ asset('js/jquery.numbox-1.3.0/jquery.numbox-1.3.0.css') }}">
 <script src="{{ asset('js/jquery.numbox-1.3.0/jquery.numbox-1.3.0.min.js') }}"></script>
-
-
 {{-- block --}}
 <script src="{{ asset('js/jquery.blockUI.js') }}"></script>
-
+{{-- imager --}}
+<link rel="stylesheet" href="{{ asset('js/Magnific-Popup/dist/magnific-popup.css') }}">
+<script src="{{ asset('js/Magnific-Popup/dist/jquery.magnific-popup.min.js') }}"></script>
 
 @endpush
 
@@ -235,22 +267,22 @@
     <script>
         $('#ventas').addClass('active');
         $('#facturas').addClass('active');
-        // $('#modalListadoClientes').modal('show');
+        $('table').on('draw.dt', function() {
+            $('.test-popup-link').magnificPopup({
+                type: 'image'
+            });
+        });
 
 
         // selecionar cliente de modal
         function selecionarCliente(arg){
             $('#modalListadoClientes').modal('hide');
-
-
-            $('#txt_user').val($(arg).data('id'));
-            $('#txt_cliente').html($(arg).data('cliente'));
-            $('#txt_identificacion').html($(arg).data('identificacion'));
-            $('#txt_direccion').html($(arg).data('direccion'));
-            $('#txt_telefono').html($(arg).data('telefono'));
-            
+            $('#txt_apellidos').val($(arg).data('apellidos'));
+            $('#txt_nombres').val($(arg).data('nombres'));
+            $('#txt_identificacion').val($(arg).data('identificacion'));
+            $('#txt_direccion').val($(arg).data('direccion'));
+            $('#txt_telefono').val($(arg).data('telefono'));
         }
-
 
         // selecionar producto de tabla
         function selecionarProducto(arg){
@@ -265,12 +297,10 @@
                 if($('.v_total_fila').length<=9){
                     var caja_producto='<input type="hidden" name="producto['+id_pro+']" value="'+id_pro+'" required>';
                     var caja_detalle='<input type="hidden" name="detalle['+id_pro+']"  value="'+$(arg).data('detalle')+'" required>';
-                    var caja_cantidad='<input type="text" name="cantidad['+id_pro+']" onkeyup="cambiarCantidad(this);" data-id="'+id_pro+'" id="txt_cantidad_'+id_pro+'" value="1" class="form-control form-control-sm">';
+                    var caja_cantidad='<input type="number" name="cantidad['+id_pro+']" onkeyup="cambiarCantidad(this);" data-id="'+id_pro+'" id="txt_cantidad_'+id_pro+'" value="1" class="form-control form-control-sm">';
+                    var caja_v_unitario='<input type="number" name="valor_unitario['+id_pro+']" onkeyup="cambiarValorUnitario(this);" data-id="'+id_pro+'" id="txt_v_unitario_'+id_pro+'" value="'+$(arg).data('precio')+'" class="form-control form-control-sm">';
 
-                    
-                    var caja_v_unitario='<input type="text" name="valor_unitario['+id_pro+']" onkeyup="cambiarValorUnitario(this);" data-id="'+id_pro+'" id="txt_v_unitario_'+id_pro+'" value="'+$(arg).data('precio')+'" class="form-control form-control-sm">';
-
-                    var fila='<tr class="filax" id="fila_'+$(arg).data('id')+'">'+
+                    var fila='<tr class="filax" id="fila_'+id_pro+'">'+
                             '<td><button type="button" class="btn btn-danger btn-sm" onclick="quitarFila(this);" data-id="'+id_pro+'">x</button></td>'+
                             '<th scope="row">'+caja_producto+caja_cantidad+'</th>'+
                             '<td>'+caja_detalle+ $(arg).data('detalle')+'</td>'+
@@ -330,7 +360,7 @@
             });
 
             valor_total=total.toFixed(2);
-            subtotal = (valor_total / ((12 / 100) + 1)).toFixed(2);
+            subtotal = (valor_total / (({{ $iva }} / 100) + 1)).toFixed(2);
             iva = (valor_total-subtotal).toFixed(2);
 
             $('#sub_total_factura').html(subtotal);
@@ -363,17 +393,19 @@
                                 type: form.attr("method"),
                                 data: form.serialize(),
                                 success:function(data){
-                                    
+                                                                      
                                     if(data.success){
                                             
                                         var botonImprimir='<button type="button" class="btn btn-danger" onclick="botonImprimirFactura(this);" data-url="'+data.url+'" data-titulo="'+data.titulo+'"><i class="fas fa-print fa-2x"></i> '+data.titulo+'</button>';
                                         
                                         $("#contenedorBotonesImprimir").html('').append(botonImprimir);
-
+                                        $('#ultimaFactura').html(data.ultimaFactura);
                                         abrirModalFactura(data.url,data.titulo);
                                         $("#alertaErrores").hide();
                                         $("#listaErrores").html('');
-                                        
+                                        $('#detalle_factura').html('');
+                                        $("#formFactura")[0].reset();
+                                        $('#ventas-productos-table').DataTable().ajax.reload();
                                     }
 
                                     if(data.error){
@@ -388,6 +420,7 @@
                                     $.unblockUI();
                                 },
                                 error: function (data,err) {
+                                    console.log(err)
                                     
                                     $("#listaErrores").html('');
                                     $("#alertaErrores").show();
@@ -428,6 +461,24 @@
         $('#modalFactura').modal('show');
         $('#contenedorFactura').attr('src',url);
         $('#tituloFactura').html(titulo);
+    }
+
+    function buscarCliente(arg){
+        var identificacion=$(arg).val();
+        $.post( "{{ route('buscarCliente') }}", { identificacion: identificacion})
+        .done(function( data ) {
+            if(data.id){
+                $('#txt_apellidos').val(data.apellidos);
+                $('#txt_nombres').val(data.nombres);
+                $('#txt_direccion').val(data.direccion);
+                $('#txt_telefono').val(data.telefono);
+            }else{
+                $('#txt_apellidos').val('');
+                $('#txt_nombres').val('');
+                $('#txt_direccion').val('');
+                $('#txt_telefono').val('');
+            }
+        });
     }
             
     </script>

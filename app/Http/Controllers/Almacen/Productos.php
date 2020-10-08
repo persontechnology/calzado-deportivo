@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Almacen;
 
 use App\DataTables\ProdutosDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Producto\RqActualizar;
+use App\Http\Requests\Producto\RqGuardar;
 use App\Models\Categoria;
 use App\Models\Producto;
 use Illuminate\Http\Request;
@@ -29,49 +31,44 @@ class Productos extends Controller
         return view('almacen.productos.nuevo',$data);
     }
 
-    public function guardar(Request $request)
+    public function guardar(RqGuardar $request)
     {
-        $rg_decimal="/^[0-9,]+(\.\d{0,2})?$/";
-        $request->validate([
-            'categoria'=>'nullable|exists:categorias,id',
-            'codigo'=>'required|string|max:255',
-            'nombre'=>'required|string|max:255',
-            'talla'=>'required|regex:'.$rg_decimal,
-            'color'=>'required|string|max:255',
-            'descripcion'=>'required|string|max:255',
-            'precio_compra'=>'required|regex:'.$rg_decimal,
-            'precio_venta'=>'required|regex:'.$rg_decimal,
-            'cantidad'=>'required|regex:'.$rg_decimal
+        
+        try {
+            DB::beginTransaction();
+            $pro=new Producto();
+            $pro->codigo=$request->codigo;
+            $pro->nombre=$request->nombre;
+            $pro->descripcion=$request->descripcion;
+            $pro->precio_compra=$request->precio_compra;
+            $pro->precio_venta=$request->precio_venta;
+            $pro->cantidad=$request->cantidad;
+            $pro->categoria_id=$request->categoria;
+            $pro->talla=$request->talla;
+            $pro->color=$request->color;
+            $pro->save();
 
-        ]);
-
-        $pro=new Producto();
-
-        $pro->codigo=$request->codigo;
-        $pro->nombre=$request->nombre;
-        $pro->descripcion=$request->descripcion;
-        $pro->precio_compra=$request->precio_compra;
-        $pro->precio_venta=$request->precio_venta;
-        $pro->cantidad=$request->cantidad;
-        $pro->categoria_id=$request->categoria;
-        $pro->talla=$request->cantidad;
-        $pro->color=$request->color;
-        $pro->save();
-
-        if ($request->hasFile('foto')) {
-            if ($request->file('foto')->isValid()) {
-                $extension = $request->foto->extension();
-                $path = Storage::putFileAs(
-                    'public/productos', $request->file('foto'), $pro->id.'.'.$extension
-                );
-                $pro->foto=$path;
-                $pro->save();
+            if ($request->hasFile('foto')) {
+                if ($request->file('foto')->isValid()) {
+                    $extension = $request->foto->extension();
+                    $path = Storage::putFileAs(
+                        'public/productos', $request->file('foto'), $pro->id.'.'.$extension
+                    );
+                    $pro->foto=$path;
+                    $pro->save();
+                }
             }
+            DB::commit();
+            $request->session()->flash('success',$pro->nombre.' ingresado exitosamente');
+            return redirect()->route('productos');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $request->session()->flash('info','Producto no ingresado');
+            return redirect()->route('nuevoProducto')->withInput();
+            
         }
 
-
-        $request->session()->flash('success',$pro->nombre.' ingresado exitosamente');
-        return redirect()->route('productos');
+        
     }
 
     public function editar($idPro)
@@ -83,50 +80,43 @@ class Productos extends Controller
         
     }
     
-    public function actualizar(Request $request)
+    public function actualizar(RqActualizar $request)
     {
-        $rg_decimal="/^[0-9,]+(\.\d{0,2})?$/";
-        $request->validate([
-            'id'=>'required|exists:productos,id',
-            'categoria'=>'nullable|exists:categorias,id',
-            'codigo'=>'required|string|max:255',
-            'nombre'=>'required|string|max:255',
-            'talla'=>'required|regex:'.$rg_decimal,
-            'color'=>'required|string|max:255',
-            'descripcion'=>'required|string|max:255',
-            'precio_compra'=>'required|regex:'.$rg_decimal,
-            'precio_venta'=>'required|regex:'.$rg_decimal,
-            'cantidad'=>'required|regex:'.$rg_decimal
-        ]);
 
-        $pro=Producto::findOrFail($request->id);
+        try {
+            DB::beginTransaction();
+            $pro=Producto::findOrFail($request->id);
+            $pro->codigo=$request->codigo;
+            $pro->nombre=$request->nombre;
+            $pro->descripcion=$request->descripcion;
+            $pro->precio_compra=$request->precio_compra;
+            $pro->precio_venta=$request->precio_venta;
+            $pro->cantidad=$request->cantidad;
+            $pro->categoria_id=$request->categoria;
+            $pro->talla=$request->talla;
+            $pro->color=$request->color;
+            $pro->save();
 
-        $pro->codigo=$request->codigo;
-        $pro->nombre=$request->nombre;
-        $pro->descripcion=$request->descripcion;
-        $pro->precio_compra=$request->precio_compra;
-        $pro->precio_venta=$request->precio_venta;
-        $pro->cantidad=$request->cantidad;
-        $pro->categoria_id=$request->categoria;
-        $pro->talla=$request->cantidad;
-        $pro->color=$request->color;
-        $pro->save();
-
-        if ($request->hasFile('foto')) {
-            if ($request->file('foto')->isValid()) {
-                Storage::delete($pro->foto);
-                $extension = $request->foto->extension();
-                $path = Storage::putFileAs(
-                    'public/productos', $request->file('foto'), $pro->id.'.'.$extension
-                );
-                $pro->foto=$path;
-                $pro->save();
+            if ($request->hasFile('foto')) {
+                if ($request->file('foto')->isValid()) {
+                    Storage::delete($pro->foto);
+                    $extension = $request->foto->extension();
+                    $path = Storage::putFileAs(
+                        'public/productos', $request->file('foto'), $pro->id.'.'.$extension
+                    );
+                    $pro->foto=$path;
+                    $pro->save();
+                }
             }
+            DB::commit();
+            $request->session()->flash('success',$pro->nombre.' actualizado exitosamente');
+            return redirect()->route('productos');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $request->session()->flash('info','Producto no actualizado');
+            return redirect()->route('editarProducto',$request->id);
         }
-
-
-        $request->session()->flash('success',$pro->nombre.' actualizado exitosamente');
-        return redirect()->route('productos');
+        
     }
 
     public function eliminar(Request $request, $idPro)

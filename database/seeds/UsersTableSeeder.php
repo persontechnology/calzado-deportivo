@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Configuracion;
 use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -61,5 +62,12 @@ class UsersTableSeeder extends Seeder
 
 
         $user->assignRole($role);
+
+        $conf=Configuracion::first();
+        if(!$conf){
+            $conf=new Configuracion();
+            $conf->iva=12;
+            $conf->save();
+        }
     }
 }

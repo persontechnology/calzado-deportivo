@@ -75,6 +75,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/facturas-ver/{id}', 'Facturas@ver')->name('verFactura');
         Route::post('/facturas-estado', 'Facturas@estado')->name('estadoFactura');
         Route::get('/facturas-buscar-fecha-a-fecha', 'Facturas@buscarFechaFecha')->name('buscarFechaFechaFactura');
+        Route::post('/facturas-buscar-cliente', 'Facturas@buscarCliente')->name('buscarCliente');
+        
         
     });
 

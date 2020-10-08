@@ -25,10 +25,14 @@
                 </div>
 
                 <div class="card-body">
-                <div>
-                    @include('ventas.facturas.detalle',['factura'=>$factura])
-                </div>
-                    
+                    <div>
+                        @include('ventas.facturas.detalle',['factura'=>$factura])
+                    </div>
+                    <div class="card-footer text-muted">
+                        @if ($factura->observacion)
+                            <strong>Observación de la factura: </strong>{{ $factura->observacion }}
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

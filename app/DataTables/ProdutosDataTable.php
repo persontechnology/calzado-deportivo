@@ -75,10 +75,10 @@ class ProdutosDataTable extends DataTable
             Column::make('foto')->searchable(false),
             Column::make('codigo')->title('Código'),
             Column::make('nombre'),
+            Column::make('talla'),
             Column::make('cantidad'),
             Column::make('precio_compra'),
             Column::make('precio_venta'),
-            Column::make('talla'),
             Column::make('color'),
             Column::make('descripcion')
             ->title('Descripción')

@@ -8,6 +8,7 @@ use App\DataTables\Ventas\FacturasDataTable;
 use App\DataTables\Ventas\ProductosDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ventas\Facturas\RqGuardar;
+use App\Models\Configuracion;
 use App\Models\Factura;
 use App\Models\FacturaDetalle;
 use App\Models\Producto;
@@ -37,7 +38,14 @@ class Facturas extends Controller
         }
         
         $cosumidor=User::where('apellidos','Consumidor')->first();
-        $data = array('udt' =>$udt ,'pdt'=>$pdt,'consumidor'=>$cosumidor );
+        $ultimaFactura=Factura::latest()->first();
+        $data = array(
+            'udt' =>$udt ,
+            'pdt'=>$pdt,
+            'consumidor'=>$cosumidor,
+            'ultimaFactura'=>$ultimaFactura,
+            'iva'=>Configuracion::first()->iva??12
+        );
         return $pdt->render('ventas.facturas.nuevo', $data);
     }
 
@@ -46,14 +54,25 @@ class Facturas extends Controller
     {
         try {
             DB::beginTransaction();
+            
+            $user=User::where('identificacion',$request->identificacion)->first();
+            if(!$user){
+                $user=new User();   
+                $user->identficacion=$request->identificacion;
+            }
+            $user->apellidos=$request->apellidos;
+            $user->nombres=$request->nombres;
+            $user->direccion=$request->direccion;
+            $user->telefono=$request->telefono;
+            $user->save();
 
             $factura=new Factura();
             $factura->numero=$request->numero;
             $factura->forma_pago=$request->forma_pago;
             $factura->observacion=$request->observacion;
-            $factura->iva=12;
+            $factura->iva=Configuracion::first()->iva??12;
             $factura->vendedor_id=Auth::id();
-            $factura->cliente_id=$request->cliente;
+            $factura->cliente_id=$user->id;
             $factura->save();
 
             foreach ($request->producto as $pro) {
@@ -72,14 +91,16 @@ class Facturas extends Controller
             $data = array(
                 'success' => 'Factura '.$factura->numero.' creado exitosamente' ,
                 'url'=>route('imprimirFactura',$factura->id),
-                'titulo'=>'IMPRIMIR FACTURA '.$factura->numero
+                'titulo'=>'IMPRIMIR FACTURA '.$factura->numero,
+                'ultimaFactura'=>$factura->numero
             );
-            return response()->json($data);
+            
 
         } catch (\Throwable $th) {   
             DB::rollback();
-            $data = array(['error' => 'Ocurrio un error, porfavor vuelva intentar' ]);
+            $data = array(['error' => 'Ocurrio un error, porfavor vuelva intentar '.$th->getMessage() ]);
         }
+        return response()->json($data);
 
     }
 
@@ -149,6 +170,16 @@ class Facturas extends Controller
 
         
         return view('ventas.facturas.buscarFechaFecha',$data);
+    }
+
+
+    public function buscarCliente(Request $request)
+    {
+        $cli=User::where('identificacion',$request->identificacion)->first();
+        if($cli){
+            return response()->json($cli);
+        }
+        return response()->json(null);
     }
 
   

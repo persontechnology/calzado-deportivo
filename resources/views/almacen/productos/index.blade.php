@@ -28,12 +28,21 @@
 <script type="text/javascript" src="{{ asset('js/DataTables/datatables.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
 
+{{-- imager --}}
+<link rel="stylesheet" href="{{ asset('js/Magnific-Popup/dist/magnific-popup.css') }}">
+<script src="{{ asset('js/Magnific-Popup/dist/jquery.magnific-popup.min.js') }}"></script>
+
 @endpush
 
 @prepend('linksPie')
     <script>
     $('#almacen').addClass('active');
     $('#productos').addClass('active');
+    $('table').on('draw.dt', function() {
+        $('.test-popup-link').magnificPopup({
+            type: 'image'
+        });
+    });
 
     </script>
     {!! $dataTable->scripts() !!}

@@ -137,7 +137,7 @@
                                 </div>
 
                                 @if (Storage::exists($pro->foto))
-                                    <a href="{{ Storage::url($pro->foto) }}" target="_blanck">
+                                    <a href="{{ Storage::url($pro->foto) }}" class="test-popup-link">
                                         <img src="{{ Storage::url($pro->foto) }}" alt="" width="30" height="20"> ver Imagén
                                     </a>
                                 @endif
@@ -160,13 +160,18 @@
 <link rel="stylesheet" href="{{ asset('js/bootstrap-select-1.13.9/dist/css/bootstrap-select.min.css') }}">
 <script src="{{ asset('js/bootstrap-select-1.13.9/dist/js/bootstrap-select.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-select-1.13.9/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
-
+{{-- imager --}}
+<link rel="stylesheet" href="{{ asset('js/Magnific-Popup/dist/magnific-popup.css') }}">
+<script src="{{ asset('js/Magnific-Popup/dist/jquery.magnific-popup.min.js') }}"></script>
 @endpush
 
 @prepend('linksPie')
     <script>
     $('#almacen').addClass('active');
     $('#productos').addClass('active');
+    $('.test-popup-link').magnificPopup({
+        type: 'image'
+    });
     </script>
 @endprepend
 @endsection
