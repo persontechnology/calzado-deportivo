@@ -47,30 +47,20 @@
                 <div class="card">
                     
                     <div class="card-header bg-transparent">
-                        <div class="row mb-2">
-                            <div class="col">
-                                <button class="btn btn-elegant my-0 btn-sm" type="button" data-toggle="modal" data-target="#modalListadoClientes">
-                                    <i class="fas fa-user-check fa-2x"></i> Buscar cliente
-                                </button>
-                            </div>
-                            <div class="col">
-                                <div class="md-form md-outline my-0">
-                                    <input id="form-lg"  class="form-control is-invalid border-danger text-danger" type="text" value="" name="numero" required>
-                                    <label for="form-lg" class="active text-danger"><strong># FACTURA</strong></label>
-                                    @if ($ultimaFactura)
-                                        <small class="form-text text-muted text-right">Última factura: <strong id="ultimaFactura">{{ $ultimaFactura->numero }}</strong></small>
-                                    @endif    
-                                </div>
-                                
-                            </div>
-                        </div>
+                        
                         
                         <div class="row">
                             <div class="col">
-                                <div class="md-form md-outline my-0">
-                                    <input type="text" value="{{ $consumidor->identificacion??'' }}" onkeyup="buscarCliente(this);" id="txt_identificacion" name="identificacion" class="form-control" required>
-                                    <label for="txt_identificacion">Identificación:<span class="text-danger">*</span></label>
+
+                            <div class="md-form input-group">
+                                <input type="text" value="{{ $consumidor->identificacion??'' }}" id="txt_identificacion" name="identificacion" class="form-control" aria-describedby="MaterialButton-addon4" required>
+                                <label for="txt_identificacion">Identificación</label>
+                                <div class="input-group-append" id="MaterialButton-addon4">
+                                    <button class="btn btn-md btn-primary m-0 px-3" onclick="buscarCliente(this);" type="button">Buscar</button>
+                                    <button class="btn btn-md btn-primary m-0 px-3" type="button" data-toggle="modal" data-target="#modalListadoClientes">Cambiar</button>
                                 </div>
+                            </div>
+                                  
                             </div>
                             
                         </div>
@@ -101,6 +91,19 @@
                                     <input type="text" value="{{ $consumidor->telefono??'' }}" id="txt_telefono" name="telefono" class="form-control">
                                     <label for="txt_telefono">Teléfono:</label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            
+                            <div class="col">
+                                <div class="md-form md-outline my-0">
+                                    <input id="form-lg"  class="form-control is-invalid border-danger text-danger" type="text" value="" name="numero" required>
+                                    <label for="form-lg" class="active text-danger"><strong># FACTURA</strong></label>
+                                    @if ($ultimaFactura)
+                                        <small class="form-text text-muted text-right">Última factura: <strong id="ultimaFactura">{{ $ultimaFactura->numero }}</strong></small>
+                                    @endif    
+                                </div>
+                                
                             </div>
                         </div>
                        
@@ -420,7 +423,6 @@
                                     $.unblockUI();
                                 },
                                 error: function (data,err) {
-                                    console.log(err)
                                     
                                     $("#listaErrores").html('');
                                     $("#alertaErrores").show();
@@ -464,7 +466,9 @@
     }
 
     function buscarCliente(arg){
-        var identificacion=$(arg).val();
+
+        $.blockUI({ message: '<i class="fas fa-spinner fa-spin"></i> Solo un momento ...' });
+        var identificacion=$('#txt_identificacion').val();
         $.post( "{{ route('buscarCliente') }}", { identificacion: identificacion})
         .done(function( data ) {
             if(data.id){
@@ -472,8 +476,20 @@
                 $('#txt_nombres').val(data.nombres);
                 $('#txt_direccion').val(data.direccion);
                 $('#txt_telefono').val(data.telefono);
+            }else{
+                $('#txt_apellidos').val('');
+                $('#txt_nombres').val('');
+                $('#txt_direccion').val('');
+                $('#txt_telefono').val('');
             }
+        }).fail(function() {
+            
+        })
+        .always(function() {
+            $.unblockUI();
         });
+
+
     }
             
     </script>

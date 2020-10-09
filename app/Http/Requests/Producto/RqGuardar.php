@@ -28,7 +28,7 @@ class RqGuardar extends FormRequest
             'categoria'=>'nullable|exists:categorias,id',
             'codigo'=>'required|string|max:255',
             'nombre'=>'required|string|max:255',
-            'talla'=>'required|regex:'.$rg_decimal,
+            'talla'=>'required|string|max:255',
             'color'=>'required|string|max:255',
             'descripcion'=>'required|string',
             'precio_compra'=>'required|regex:'.$rg_decimal,

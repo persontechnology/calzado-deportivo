@@ -23,7 +23,7 @@ class CreateProductosTable extends Migration
             $table->decimal('precio_compra',19,2);
             $table->decimal('precio_venta',19,2);
             $table->decimal('cantidad');
-            $table->decimal('talla');
+            $table->string('talla');
             $table->string('color');
             $table->text('foto')->nullable();
             

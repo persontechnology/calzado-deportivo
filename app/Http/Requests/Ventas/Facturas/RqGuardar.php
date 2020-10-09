@@ -27,7 +27,7 @@ class RqGuardar extends FormRequest
     {
         Validator::extend('RqCantidadProducto', function($attribute, $value, $parameters){
             $producto=Producto::findOrFail($value);  
-            if($producto->cantidad>1){
+            if($producto->cantidad>=1){
                 return true;
             }else{
                 return false;
