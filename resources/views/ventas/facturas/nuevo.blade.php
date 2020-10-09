@@ -56,7 +56,7 @@
                             <div class="col">
                                 <div class="md-form md-outline my-0">
                                     <input id="form-lg"  class="form-control is-invalid border-danger text-danger" type="text" value="" name="numero" required>
-                                    <label for="form-lg" class="active text-danger"><strong>NÚMERO DE FACTURA</strong></label>
+                                    <label for="form-lg" class="active text-danger"><strong># FACTURA</strong></label>
                                     @if ($ultimaFactura)
                                         <small class="form-text text-muted text-right">Última factura: <strong id="ultimaFactura">{{ $ultimaFactura->numero }}</strong></small>
                                     @endif    
@@ -393,7 +393,7 @@
                                 type: form.attr("method"),
                                 data: form.serialize(),
                                 success:function(data){
-                                                                      
+                                     console.log(data)                                 
                                     if(data.success){
                                             
                                         var botonImprimir='<button type="button" class="btn btn-danger" onclick="botonImprimirFactura(this);" data-url="'+data.url+'" data-titulo="'+data.titulo+'"><i class="fas fa-print fa-2x"></i> '+data.titulo+'</button>';
@@ -472,11 +472,6 @@
                 $('#txt_nombres').val(data.nombres);
                 $('#txt_direccion').val(data.direccion);
                 $('#txt_telefono').val(data.telefono);
-            }else{
-                $('#txt_apellidos').val('');
-                $('#txt_nombres').val('');
-                $('#txt_direccion').val('');
-                $('#txt_telefono').val('');
             }
         });
     }

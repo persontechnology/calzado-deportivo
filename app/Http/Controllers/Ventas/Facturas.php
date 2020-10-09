@@ -58,7 +58,7 @@ class Facturas extends Controller
             $user=User::where('identificacion',$request->identificacion)->first();
             if(!$user){
                 $user=new User();   
-                $user->identficacion=$request->identificacion;
+                $user->identificacion=$request->identificacion;
             }
             $user->apellidos=$request->apellidos;
             $user->nombres=$request->nombres;
@@ -98,7 +98,7 @@ class Facturas extends Controller
 
         } catch (\Throwable $th) {   
             DB::rollback();
-            $data = array(['error' => 'Ocurrio un error, porfavor vuelva intentar '.$th->getMessage() ]);
+            $data = array('error' => 'Ocurrio un error, porfavor vuelva intentar '.$th->getMessage() );
         }
         return response()->json($data);
 

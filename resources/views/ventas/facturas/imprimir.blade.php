@@ -12,6 +12,7 @@
             margin:0; 
             padding:0;
             font-size: 12px;
+            color:blue;
         }
         div { 
             position:fixed; 
@@ -28,15 +29,17 @@
         }
 
         table td, th {
-            border: 1px solid black;
-            padding-left: 5px;
-            text-align: left;
-            
-            
+            border: 1px solid blue;
+            padding-left: 2px;
+            text-align: left;   
+            padding-right: 2px;  
+            border-style:dotted;     
         }
-
+        a:link{
+            color:blue;
+        }
         .float-right{
-            float: right
+            float: right;           
         }
         
         hr.new3 {
@@ -45,6 +48,11 @@
         a{
             color: black;
             text-decoration: none;
+        }
+        .linea{
+            display: inline-flex;
+            border: none; 
+            vertical-align: top;
         }
         
     </style>
