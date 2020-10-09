@@ -268,8 +268,7 @@
 
 @prepend('linksPie')
     <script>
-        $('#ventas').addClass('active');
-        $('#facturas').addClass('active');
+        $('#nuevaFcatura').addClass('active');
         $('table').on('draw.dt', function() {
             $('.test-popup-link').magnificPopup({
                 type: 'image'

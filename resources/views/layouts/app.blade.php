@@ -111,6 +111,10 @@
                             </div>
                         </li>
 
+                        <li class="nav-item" id="nuevaFcatura">
+                            <a class="nav-link" href="{{ route('nuevaFactura') }}">Nueva factura</a>
+                        </li>
+
                         @endcan
 
                         @role('Administrador')
