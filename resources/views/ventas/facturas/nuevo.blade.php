@@ -290,7 +290,7 @@
         function selecionarProducto(arg){
 
             var id_pro=$(arg).data('id');
-
+console.log($(arg).data('detalle'))
 
             if($('#fila_'+id_pro).length){
                 $.notify("Producto ya está agregado","info");
