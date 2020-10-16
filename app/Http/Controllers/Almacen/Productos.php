@@ -136,4 +136,31 @@ class Productos extends Controller
         return redirect()->route('productos');
 
     }
+
+
+    public function duplicar(Request $request_i)
+    {
+        $request=Producto::findOrFail($request_i->id);
+        try {
+            DB::beginTransaction();
+            $pro=new Producto();
+            $pro->codigo=$request->codigo;
+            $pro->nombre=$request->nombre;
+            $pro->descripcion=$request->descripcion;
+            $pro->precio_compra=$request->precio_compra;
+            $pro->precio_venta=$request->precio_venta;
+            $pro->cantidad=$request->cantidad;
+            $pro->categoria_id=$request->categoria_id;
+            $pro->talla=$request->talla;
+            $pro->color=$request->color;
+            $pro->foto=$request->foto;
+            $pro->save();
+            DB::commit();
+            return response()->json(['url'=>route('editarProducto',$pro->id)]);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['error'=>'Ocurrio un error, vuelva intentar '.$th->getMessage()]);
+            
+        }
+    }
 }

@@ -84,7 +84,8 @@ class FacturasDataTable extends DataTable
                   ->printable(false)
                   ->width(60)
                   ->searchable(false)
-                  ->addClass('text-center'),
+                  ->addClass('text-center')
+                  ->title('Opciones'),
             // Column::make('id'),
             Column::make('numero')->title('#_Factura'),
             Column::make('created_at')->title('Fecha'),

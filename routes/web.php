@@ -63,6 +63,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/productos-editar/{id}', 'Productos@editar')->name('editarProducto');
         Route::post('/productos-actualizar', 'Productos@actualizar')->name('actualizarProducto');
         Route::get('/productos-eliminar/{id}', 'Productos@eliminar')->name('eliminarProducto');
+        Route::post('/productos-duplicar', 'Productos@duplicar')->name('duplicarProducto');
+        
 
     });
 

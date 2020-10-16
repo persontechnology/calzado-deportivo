@@ -27,6 +27,16 @@ class ProdutosDataTable extends DataTable
             ->addColumn('action', function($pro){
                 return view('almacen.productos.opciones',['pro'=>$pro])->render();
             })
+            ->editColumn('categoria_id',function($pro){
+                return $pro->categoria->nombre??'';
+            })
+            ->editColumn('created_at',function($pro){
+                return $pro->created_at;
+            })
+            ->editColumn('updated_at',function($pro){
+                return $pro->updated_at;
+            })
+            
             ->rawColumns(['action','foto']);
     }
 
@@ -73,6 +83,7 @@ class ProdutosDataTable extends DataTable
                   ->title('Opciones')
                   ->addClass('text-center'),
             Column::make('foto')->searchable(false),
+            Column::make('categoria_id')->searchable(false)->title('Categoría'),
             Column::make('codigo')->title('Código'),
             Column::make('nombre'),
             Column::make('talla'),
@@ -83,6 +94,8 @@ class ProdutosDataTable extends DataTable
             Column::make('descripcion')
             ->title('Descripción')
             ->searchable(false),
+            Column::make('created_at')->title('Creado'),
+            Column::make('updated_at')->title('Actualizado'),
         ];
     }
 
